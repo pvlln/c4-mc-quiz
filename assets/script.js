@@ -1,86 +1,184 @@
 // Select elements
-var timeEl = $('#timer');
-var titleEl = $('#title');
-var content = $('#content');
-var content2 = $('#content-2');
-var content3 = $('#content-3');
+var timeEl = document.querySelector('#timer');
+var titleEl = document.querySelector('#title');
+var content = document.querySelector('#content');
+var content2 = document.querySelector('#content-2');
+var content3 = document.querySelector('#content-3');
+var startBtn = document.querySelector('#start');
 
 // Create an object for every question and the correct answer
 var question1 = {
+    count: 1,
     question: "Commonly used data types DO NOT include:",
     option1: "Strings",
     option2: "Booleans",
     option3: "Alerts",
     option4: "Numbers",
+    answer: "Alerts",
 };
-//CONSOLE CHECK: DELETE THIS
+// Console check
 console.log(question1.lenght);
 
-var question1Answer = "Alerts";
-
 var question2 = {
+    count: 2,
     question: "The condition in an if / else statement is enclosed within _____.",
     option1: "Quotes",
     option2: "Curly brackets",
     option3: "Parenthesis",
     option4: "Square brackets",
+    answer: "Parenthesis",
 };
 
-var question2Answer = "Parenthesis";
-
 var question3 = {
+    count: 3,
     question: "Arrays in JavaScript can be used to store _____.",
     option1: "Numbers and strings",
     option2: "Other arrays",
     option3: "Booleans",
     option4: "All of the above",
+    answer: "All of the above",
 };
 
-var question3Answer = "All of the above";
-
 var question4 = {
+    count: 4,
     question: "String values must be enclosed within _____ when being assigned to variables.",
     option1: "Commas",
     option2: "Curly brackets",
     option3: "Quotes",
     option4: "Parentheses",
+    answer: "Quotes",
 };
 
-var question4Answer = "Quotes";
-
 var question5 = {
+    count: 5,
     question: "A very useful tool used during development and debugging for printing content to the debugger is:",
     option1: "Javascript",
     option2: "Terminal/bash",
     option3: "For loops",
     option4: "Console.log",
+    answer: "Console.log",
 };
 
-var question5Answer = "Console.log";
-
-// Function to turn questions into html unordered lists with button items, and add them to the html doc elements
-function makeList(obj){
-    var htmlEl = "<ul>";
-    for(let i=1; i < obj.length; i++){
-        htmlEl += '<button class="btn custom-btn">' + i + ". " + obj[i] + '</button>';
-    }
-    htmlEl += "</ul>"
-    titleEl.text(obj[0]);
-    content.text(htmlEl);
-};
+var questionList = [question1, question2, question3, question4, question5];
 
 // Timer start
-var timeleft = 75;
+var timeLeft = 75;
 
 // Timer function
 function setTimer(){
-
+    var timerInterval = setInterval(function() {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+        if(timeLeft === 0) {
+            clearInterval(timerInterval);
+            window.alert("Time is up!");
+            document.reload();
+        }
+    }, 7500);
 }
 
-// Answer checker/next question/answer consequence function
-function submitAns(){
+// Question count and score
+var questionCount = 0;
+var score = 0;
+var highscoreList = new Object();
 
+// Question right/wrong check
+var correct = true;
+
+// Function to move on to next question if incorrect
+function nextQuestion(){
+    // Increase question count- bring in the object with the count of the question
+    questionCount++;
+    if (questionCount > 4){
+        endQuiz();
+    }
+    var currentQ;
+    for (let i = 0; i < questionList.length; i++){
+        if (questionList[i][0] == questionCount){
+            currentQ = questionList[i];
+        }
+    }
+    // Make html element
+    var htmlEl = "<ul>";
+    // Iterate through object and create buttons list
+    for(let i=2; i < (currentQ.length - 1); i++){
+        // Create html element for correct answer
+        if (currentQ[i] == currentQ[5]){
+            htmlEl += ('<li><button class="btn correct custom-btn">' + i + ". " + currentQ[i] + '</button></li>');
+        // Create html element for incorrect answer 
+        } else {
+            htmlEl += ('<li><button class="btn incorrect custom-btn">' + i + ". " + currentQ[i] + '</button></li>'); 
+        }
+    }
+    // Close out html unordered list
+    htmlEl += "</ul>"
+    // Console check
+    console.log(htmlEl);
+    // Print on page
+    titleEl.textContent(currentQ[1]);
+    content.textContent(htmlEl);
+    // Add event listeners to correct and incorrect answers, delegate to other functions
+    var correctAnswer = document.querySelector('#correct');
+    var incorrectAnswer = document.querySelector('#incorrect');
+    correctAnswer.addEventListener('click', function(){
+        correct = true;
+        nextQuestion();
+    });
+    correctAnswer.addEventListener('click', function(){
+        correct = false;
+        nextQuestion();
+    });
 }
 
+// Function for first question initiation
+function startQuiz(obj){
+    // Check event listener
+    console.log("makeList function: initiated");
+    // Initialize timer
+    setTimer();
+    // Create list
+    var htmlEl = "<ul>";
+    // Iterate through object and create buttons list
+    for(let i=2; i < (obj.length - 1); i++){
+        // Create html element for correct answer
+        if (obj[i] == obj[5]){
+            htmlEl += ('<li><button class="btn correct custom-btn">' + i + ". " + obj[i] + '</button></li>');
+        // Create html element for incorrect answer 
+        } else {
+            htmlEl += ('<li><button class="btn incorrect custom-btn">' + i + ". " + obj[i] + '</button></li>'); 
+        }
+    }
+    // Close out html unordered list
+    htmlEl += "</ul>"
+    // Console check
+    console.log(htmlEl);
+    // Print on page
+    titleEl.textContent(obj[1]);
+    content.textContent(htmlEl);
+    // Add event listeners to correct and incorrect answers, delegate to other functions
+    var correctAnswer = document.querySelector('#correct');
+    var incorrectAnswer = document.querySelector('#incorrect');
+    correctAnswer.addEventListener('click', function(){
+        correct = true;
+        score ++;
+        nextQuestion();
+    });
+    correctAnswer.addEventListener('click', function(){
+        correct = false;
+        timeLeft -= 10;
+        nextQuestion();
+    });
+}
+
+// Function to end quiz and see results/highscore
+function endQuiz(){
+    var initials = prompt("Please enter your initials:");
+    highscoreList[initials] = score;
+    // Add to local storage
+    // Print local storage list in html
+    // Set timer = 0
+    
+}
 
 // Add event listeners 
+startBtn.addEventListener('click', startQuiz(questionList[0]));
