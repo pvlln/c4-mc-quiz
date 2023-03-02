@@ -116,17 +116,19 @@ function nextQuestion(){
     console.log(htmlEl);
     // Print on page
     titleEl.textContent(currentQ[1]);
-    content.textContent(htmlEl);
+    content.innerHTML(htmlEl);
     // Add event listeners to correct and incorrect answers, delegate to other functions
     var correctAnswer = document.querySelector('#correct');
     var incorrectAnswer = document.querySelector('#incorrect');
     correctAnswer.addEventListener('click', function(){
         correct = true;
         nextQuestion();
+        content2.textContent("Correct!");
     });
     correctAnswer.addEventListener('click', function(){
         correct = false;
         nextQuestion();
+        content2.textContent("Incorrect!");
     });
 }
 
@@ -154,7 +156,7 @@ function startQuiz(obj){
     console.log(htmlEl);
     // Print on page
     titleEl.textContent(obj[1]);
-    content.textContent(htmlEl);
+    content.innerHTML(htmlEl);
     // Add event listeners to correct and incorrect answers, delegate to other functions
     var correctAnswer = document.querySelector('#correct');
     var incorrectAnswer = document.querySelector('#incorrect');
@@ -167,6 +169,7 @@ function startQuiz(obj){
         correct = false;
         timeLeft -= 10;
         nextQuestion();
+        content2.textContent("Incorrect!");
     });
 }
 
@@ -174,10 +177,14 @@ function startQuiz(obj){
 function endQuiz(){
     var initials = prompt("Please enter your initials:");
     highscoreList[initials] = score;
-    // Add to local storage
-    // Print local storage list in html
-    // Set timer = 0
-    
+    var newScore = localStorage.setItem(initials, score);
+    htmlScores = "<h2>The high scores for this quiz are as follows:</h2>" ;
+    content = htmlScores + "<ul>"
+    for (let i = 0; i < localStorage.length; i++){
+        content += "<li>" + localStorage.getItem(localStorage.key(i)) + "</li>";
+    }
+    content += "</ul>"
+    timeLeft = 0;
 }
 
 // Add event listeners 
