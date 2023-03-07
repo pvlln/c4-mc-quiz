@@ -132,6 +132,7 @@ function nextQuestion(){
     });
 }
 
+
 // Function for first question initiation
 function startQuiz(obj){
     // Check event listener
